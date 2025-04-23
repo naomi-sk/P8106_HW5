@@ -22,7 +22,9 @@ knitr::opts_chunk$set(echo = TRUE)
 # Load libraries
 library(tidyverse)
 library(caret)
-library(ggplot2)   
+library(ggplot2)  
+library(tidymodels)
+library(e1071)
 
 ```
 
@@ -68,6 +70,53 @@ I made sure to recode the variables origin and cylinders to factor variable type
 
 ## a) Fit support vector classifier
 
+```{r}
+
+# Set seed for reproducibility
+set.seed(299)
+
+# Fit model
+linear.tune <- tune.svm(mpg_cat ~ . ,
+                        data = training_data_auto,
+                        kernel = "linear",
+                        cost = exp(seq(-6,3, len = 50)),
+                        scale = TRUE)
+
+# Tuning curve
+plot(linear.tune) 
+
+
+```
+
+I initially proceeded with exploring a wide grid for the cost tuning parameter, from exp(-6) to exp(3). 
+However, the plot shows that accuracy (i.e., 1-Misclassification Error) stabilises quite early, around cost = 1, and increasing cost beyond that does not notably improve performance. Therefore, I decided on reducing the size of the cost tuning parameter grid.
+
+```{r}
+
+# Set seed for reproducibility
+set.seed(299)
+
+# Fit model
+linear.tune.2 <- tune.svm(mpg_cat ~ . ,
+                        data = training_data_auto,
+                        kernel = "linear",
+                        cost = exp(seq(-6,2, len = 50)),
+                        scale = TRUE)
+
+# Tuning curve
+plot(linear.tune.2) 
+
+# Optimal parameters
+linear.tune.2$best.parameters
+
+exp(-6)
+exp(2)
+```
+
+I refined the tuning parameter grid to cover values in a range between exp(-6) and exp(-2), which appears to be appropriate.
+
+
+## a) Fit support vector machine with radial kernel
 
 ```{r}
 
