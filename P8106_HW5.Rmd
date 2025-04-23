@@ -1,0 +1,75 @@
+---
+title: "P8106_HW5"
+author:
+- "Naomi Simon-Kumar"
+- ns3782
+date: "23/11/2025"
+output:
+  pdf_document:
+    latex_engine: xelatex
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading libraries
+
+```{r libraries, message=FALSE, warning=FALSE}
+
+# Load libraries
+library(tidyverse)
+library(caret)
+library(ggplot2)   
+
+```
+
+# Question 1. Support Vector Machines
+
+## Partition into training and testing set
+
+```{r}
+
+# Read in dataset
+auto <- read.csv("auto.csv")
+
+# Remove NAs
+auto <- na.omit(auto)
+
+# Make sure factor variables are correctly coded
+auto$cylinders <- factor(auto$cylinders)
+auto$origin <- factor(auto$origin)
+auto$mpg_cat <- factor(auto$mpg_cat, levels = c("low", "high"))
+
+# Check variable types
+str(auto)
+levels(auto$mpg_cat)
+
+# Set seed for reproducibility
+set.seed(299)
+
+# Split data into training and testing data
+data_split_auto <- initial_split(auto, prop = 0.7)
+
+
+# Extract the training and test data
+training_data_auto <- training(data_split_auto)
+testing_data_auto <- testing(data_split_auto)
+
+# Check variable types
+# str(training_data_auto)
+# str(testing_data_auto)
+
+```
+
+I made sure to recode the variables origin and cylinders to factor variable type. Although cylinders was originally represented as an integer, it is a multi-valued discrete variable as its values represent categorical groupings of engine types (i.e., 4, 6, 8 cylinder),
+
+## a) Fit support vector classifier
+
+
+```{r}
+
+
+```
