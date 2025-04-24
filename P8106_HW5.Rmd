@@ -85,7 +85,6 @@ linear.tune <- tune.svm(mpg_cat ~ . ,
 # Tuning curve
 plot(linear.tune) 
 
-
 ```
 
 I initially proceeded with exploring a wide grid for the cost tuning parameter, from exp(-6) to exp(3). 
@@ -109,16 +108,55 @@ plot(linear.tune.2)
 # Optimal parameters
 linear.tune.2$best.parameters
 
-exp(-6)
-exp(2)
 ```
 
-I refined the tuning parameter grid to cover values in a range between exp(-6) and exp(-2), which appears to be appropriate.
+I refined the tuning parameter grid to cover values in a range between exp(-6) and exp(2), which appears to be appropriate. The **best cost tuning parameter is 0.239651** which is within this range and not at the edge of the grid boundaries. This is also confirmed by the plotted tuning curve, where the minimum cross validation accuracy (1-Misclassification error) is around 0.08.
+
+Next, finding the training error:
+
+```{r}
+
+# Set seed for reproducibility
+set.seed(299)
+
+# get the best model
+best.linear <- linear.tune.2$best.model
+
+# Training Error
+pred_train <- predict(best.linear, newdata = training_data_auto)
+confusionMatrix(data = pred_train,
+                reference = training_data_auto$mpg_cat)
+
+# Calculating training misclassification error
+
+1-0.9161 # 0.0839
+
+# Test Error
+pred_test <- predict(best.linear, newdata = testing_data_auto)
+confusionMatrix(data = pred_test,
+                reference = testing_data_auto$mpg_cat)
 
 
-## a) Fit support vector machine with radial kernel
+# Calculating test misclassification error
+
+1-0.8898 # 0.1102
+
+
+```
+
+Based on the model, the training misclassification error is **0.0839 (8.39%)** with **accuracy = 0.9161**, which shows that there is strong model performance. **The Kappa statistic is 0.8319**, which indicates an excellent level of agreement between predicted, and observed mpg categories beyond chance (McHugh, 2012).
+
+The test misclassification error is **0.1102 (11.02%)** with **accuracy = 0.8898**, which indicates that our model generalises well to unseen data. **The Kappa statistic is 0.7794**, indicating substantial agreement between predicted and observed mpg categories, beyond what would be expected due to chance (McHugh, 2012). 
+
+
+## b) Fit support vector machine with radial kernel
 
 ```{r}
 
 
 ```
+
+
+# References
+
+McHugh, M. L. (2012). Interrater reliability: the kappa statistic. Biochemia medica, 22(3), 276-282.
