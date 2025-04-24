@@ -144,7 +144,7 @@ confusionMatrix(data = pred_test,
 
 ```
 
-Based on the model, the training misclassification error is **0.0839 (8.39%)** with **accuracy = 0.9161**, which shows that there is strong model performance. **The Kappa statistic is 0.8319**, which indicates an excellent level of agreement between predicted, and observed mpg categories beyond chance (McHugh, 2012).
+Based on the model, the training misclassification error is **0.0839 (8.39%)** with **accuracy = 0.9161**, which shows that there is strong model performance (i.e., the model is a good fit to the training data). **The Kappa statistic is 0.8319**, which indicates an excellent level of agreement between predicted, and observed mpg categories beyond chance (McHugh, 2012).
 
 The test misclassification error is **0.1102 (11.02%)** with **accuracy = 0.8898**, which indicates that our model generalises well to unseen data. **The Kappa statistic is 0.7794**, indicating substantial agreement between predicted and observed mpg categories, beyond what would be expected due to chance (McHugh, 2012). 
 
