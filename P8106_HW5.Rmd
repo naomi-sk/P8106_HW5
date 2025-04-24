@@ -144,10 +144,9 @@ confusionMatrix(data = pred_test,
 
 ```
 
-Based on the model, the training misclassification error is **0.0839 (8.39%)** with **accuracy = 0.9161**, which shows that there is strong model performance (i.e., the model is a good fit to the training data). **The Kappa statistic is 0.8319**, which indicates an excellent level of agreement between predicted, and observed mpg categories beyond chance (McHugh, 2012).
+Based on the model, the training misclassification error is **0.0839** with **accuracy = 0.9161**, which shows that there is strong model performance (i.e., the model is a good fit to the training data). **The Kappa statistic is 0.8319**, which indicates an excellent level of agreement between predicted, and observed mpg categories beyond chance (McHugh, 2012).
 
-The test misclassification error is **0.1102 (11.02%)** with **accuracy = 0.8898**, which indicates that our model generalises well to unseen data. **The Kappa statistic is 0.7794**, indicating substantial agreement between predicted and observed mpg categories, beyond what would be expected due to chance (McHugh, 2012). 
-
+The test misclassification error is **0.1102** with **accuracy = 0.8898**, which indicates that our model generalises well to unseen data. **The Kappa statistic is 0.7794**, indicating substantial agreement between predicted and observed mpg categories, beyond what would be expected due to chance (McHugh, 2012). 
 
 ## b) Fit support vector machine with radial kernel
 
@@ -204,8 +203,50 @@ Next, finding the testing and training error:
 # Set seed for reproducibility
 set.seed(299)
 
+# get the best model
+best.radial <- radial.tune$best.model
+
+# Training Error and Confusion Matrix
+pred.radial.train <- predict(best.radial, 
+                       newdata = training_data_auto)
+
+confusionMatrix(data = pred.radial.train,
+                reference = training_data_auto$mpg_cat)
+
+1-0.9672 # misclassification training error          
+
+# Testing Error and Confusion Matrix
+pred.radial.test <- predict(best.radial, 
+                       newdata = testing_data_auto)
+
+confusionMatrix(data = pred.radial.test,
+                reference = testing_data_auto$mpg_cat)
+
+1-0.9237 # misclassification testing error     
+
 ```
 
+Based on the model, the training misclassification error is **0.0328** with **accuracy = 0.9672**, indicating excellent model performance on the training data. **The Kappa statistic is 0.9342**, which reflects an excellent level of agreement between predicted and observed mpg categories beyond chance (McHugh, 2012).
+
+The test misclassification error is **0.0763** with **accuracy = 0.9237**, which indicates that our model generalises well to unseen data. **The Kappa statistic is 0.8469**, indicating substantial agreement between predicted and observed mpg categories, beyond what would be expected due to chance (McHugh, 2012).
+
+
+```{r}
+
+# Set seed for reproducibility
+set.seed(299)
+
+# Plot radial kernel Support vector machine decision boundary
+plot(best.radial, training_data_auto,
+     weight ~ horsepower,
+     slice = list(acceleration = 12.2, displacement = 97, year = 76, origin = 2, cylinders = 4),
+     grid = 100,
+     symbolPalette = c("cyan", "darkblue"),
+     color.palette = heat.colors)
+
+```
+
+I plotted the radial support vector machine decision boundary, using the predictor variables horsepower and weight from the training data set, keeping the other predictors fixed. This allows us to see that the decision boundary is nonlinear.
 
 # References
 
