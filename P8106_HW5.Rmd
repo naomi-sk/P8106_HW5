@@ -153,6 +153,56 @@ The test misclassification error is **0.1102 (11.02%)** with **accuracy = 0.8898
 
 ```{r}
 
+# Set seed for reproducibility
+set.seed(299)
+
+# Fit initial radial kernel model
+# 2 tuning parameters: cost and gamma
+# radial.tune <- tune.svm(mpg_cat ~ . ,
+ #                       data = training_data_auto,
+ #                       kernel = "radial",
+ #                       cost = exp(seq(1, 5, len = 50)),
+ #                       gamma = exp(seq(-10, 0,len = 20)))
+
+
+# Best cost and gamma parameters
+# radial.tune$best.parameters
+# gamma = 0.3490181  , cost = 5.667193
+
+# 2.718 to 148.4132 : cost
+#  4.539993e-05 to 1 : gamma
+
+# Fit refined radial kernel model
+radial.tune <- tune.svm(mpg_cat ~ . ,
+                      data = training_data_auto,
+                      kernel = "radial",
+                      cost = exp(seq(1, 4, len = 50)),
+                      gamma = exp(seq(-8, 3,len = 20)))
+
+# Checking to see if tuning parameters are within grid
+exp(1) # 2.718282
+exp(4) # 54.59815
+
+exp(-8) # 0.0003354626
+exp(3)# 20.08554
+
+# Find best tuning parameters
+radial.tune$best.parameters
+
+# Plot 
+plot(radial.tune, transform.y = log, transform.x = log,
+     color.palette = terrain.colors)
+
+```
+
+I fit an initial support vector machine with radial kernel model, exploring different grids for the tuning parameters cost and gamma to ensure the optimal tuning parameters were appropriately within their respective grid ranges and not at the boundary of the grid. The best **cost** tuning parameter for this model is **5.33063**, and the best **gamma** tuning parameter is **0.3490181**. 
+
+Next, finding the testing and training error:
+
+```{r}
+
+# Set seed for reproducibility
+set.seed(299)
 
 ```
 
