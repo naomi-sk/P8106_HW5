@@ -25,6 +25,12 @@ library(caret)
 library(ggplot2)  
 library(tidymodels)
 library(e1071)
+library(factoextra)
+library(gridExtra)
+library(corrplot)
+library(RColorBrewer)
+library(gplots)
+library(jpeg)
 
 ```
 
@@ -247,6 +253,111 @@ plot(best.radial, training_data_auto,
 ```
 
 I plotted the radial support vector machine decision boundary, using the predictor variables horsepower and weight from the training data set, keeping the other predictors fixed. This allows us to see that the decision boundary is nonlinear.
+
+
+# Question 2.
+
+## Load data
+
+```{r}
+
+# Load library
+library(ISLR)
+
+# Load data
+data("USArrests")
+USArrests_data <- USArrests
+
+```
+
+
+## a) Hierarchical clustering Part 1
+
+I proceeded with performing hierarchical clustering using complete linkage and Euclidean distance. With complete linkage, we typically get more compact clusters.
+
+```{r}
+
+# Set seed for reproducibility
+set.seed(299)
+
+# Hierarchical clustering using complete linkage and Euclidean distance
+hc.complete <- hclust(dist(USArrests_data), method = "complete")
+
+
+fviz_dend(hc.complete, k = 4,
+          cex = 0.3,
+          palette = "jco", # color scheme
+          color_labels_by_k = TRUE,
+          rect = TRUE, # add a rectangle around groups
+          rect_fill = TRUE,
+          rect_border = "jco",
+          labels_track_height = 2.5)
+
+```
+
+Based on the visualised dendrogram, we can see that there are three more evenly sized clusters, as well as a single small cluster with only two states (Florida and North Carolina). When inspecting the data, it appears as though these states have very high assault rates compared to most other states, in addition to high murder rates, which may be an explanation for their grouping.
+The other larger clusters may have similar high arrests across multiple crime categories and similar urban population density.  For example, the red cluster, includes Iowa, Nebraska, North Dakota and may reflect lower crime rates and moderate to lower urban population, compared to yellow cluster inclusive of higher urban populations such as California and New York, which also have higher crime rates in several categories.
+
+```{r}
+
+# Set seed for reproducibility
+set.seed(299)
+
+# Cut into 3 clusters
+ind3.complete <- cutree(hc.complete, 3)
+
+
+# Inspect Cluster 1
+dat[ind4.complete == 1,]
+
+# Inspect Cluster 2
+dat[ind4.complete == 2,]
+
+# Inspect Cluster 3
+dat[ind4.complete == 3,]
+
+```
+
+From cutting the dendrogram, we see **Cluster 1** includes the following states: Alabama, Alaska, Arizona, California, Delaware, Florida, Illinois, Louisiana, Maryland, Michigan, Mississippi, Nevada, New Mexico, New York, North Carolina, South Carolina. These may tend to have higher rates of crimes such as Assault and Murder, as well as having higher urban populations.
+
+**Cluster 2** includes the following states: Arkansas, Colorado, Georgia, Massachusetts, Missouri, New Jersey, Oklahoma, Oregon, Rhode Island, Texas, Virginia, Washington, Wyoming, Tennessee. These states may have more moderate/less extreme crime levels across the categories, and potentially more of a mixed profile across the variables, including urban population.
+
+Finally, **Cluster 3** includes the states: Connecticut, Hawaii, Idaho, Indiana, Iowa, Kansas, Kentucky, Maine, Minnesota, Montana, Nebraska, New Hampshire, North Dakota, Ohio, Pennsylvania, South Dakota, Utah, Vermont, West Virginia, Wisconsin. These may represent states with comparably lower crime rates as well as lower urban populations.
+
+
+```{r}
+
+col1 <- colorRampPalette(brewer.pal(9, "GnBu"))(100)
+col2 <- c("yellow","blue4")
+
+
+# Make matrix based on data
+data_matrix <- as.matrix(USArrests_data[, 1:4])
+rownames(data_matrix) <- rownames(USArrests_data)
+
+# Heatmap 
+heatmap.2(t(data_matrix),
+          col = col1, keysize=.8, key.par = list(cex=.5),
+          trace = "none", key = TRUE, 
+          cexCol = 0.6,        # Shrink state names
+          cexRow = 0.8,        # Optional: variable font
+          labCol = rownames(USArrests_data),
+          margins = c(12, 8))
+
+
+```
+
+From the heatmap, which does not represent all the states in the dataset, we see confirmation that states including North Carolina, Delaware, Louisiana, New York and Mississippi (dark blue colouring). Most states have relatively low and comparable Murder and Rape crime rates. Urban population also doesn't appear to be highly variable. Therefore, it seems as though the clustering is largely influenced by the Assault rates.
+
+## a) Hierarchical clustering Part 2
+
+```{r}
+
+
+
+```
+
+
 
 # References
 
